@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>歴史さんぽ</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title>歴史さんぽ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" %>
+</head>
+<body>
+  <div class="d-flex flex-column min-vh-100">
+    <%= render 'shared/header' %>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-  </head>
+    <main class="flex-fill py-5">
+      <%= yield %>
+    </main>
 
-  <body>
-    <%= yield %>
-  </body>
+    <%= render 'shared/footer' %>
+  </div>
+</body>
 </html>
