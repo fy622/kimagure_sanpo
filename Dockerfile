@@ -8,7 +8,9 @@ ENV LC_ALL C.UTF-8
 ENV EDITOR=vim
 
 #dbにpostgreSQLを使用するので対象のパッケージをインストール
-RUN apt-get update && apt-get install -y postgresql-client vim
+RUN apt-get update && apt-get install -y postgresql-client vim nodejs npm
+
+RUN npm install -g yarn
 
 #appディレクトリを作成
 RUN mkdir /app
