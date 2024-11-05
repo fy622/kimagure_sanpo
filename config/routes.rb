@@ -7,4 +7,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#top"
+  post 'result', to: 'home#result', as: 'result' # 結果ページ
+  get 'detail', to: 'home#detail', as: 'detail' # 詳細ページ
 end
