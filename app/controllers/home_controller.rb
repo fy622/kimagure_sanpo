@@ -27,7 +27,7 @@ class HomeController < ApplicationController
 
   def get_sites_for_route(latitude, longitude, distance)
     radius = (distance * 1000).to_i # 距離をメートルに変換
-    api_key = "AIzaSyC400rVt1y2tFjUjjg_GzVLO5ZukCHgBUg" # 取得したAPIキーを設定
+    api_key = "" # 取得したAPIキーを設定
 
     url = URI("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=#{latitude},#{longitude}&radius=#{radius}&keyword=historical+site&key=#{api_key}")
 
