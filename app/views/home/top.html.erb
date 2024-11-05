@@ -12,3 +12,26 @@
     <button type="submit" class="btn btn-dark btn-lg">ルートを生成する</button>
   </form>
 </div>
+
+<h1>散歩ルート生成</h1>
+<%= form_with url: result_path, method: :post, local: true, id: "routeForm" do %>
+  <label>歩きたい距離 (km):</label>
+  <%= number_field_tag :distance, nil, placeholder: "例: 5", id: "distanceInput" %>
+  <%= hidden_field_tag :latitude, nil, id: "latitudeInput" %>
+  <%= hidden_field_tag :longitude, nil, id: "longitudeInput" %>
+  <%= submit_tag "ルート生成" %>
+<% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        // 現在地を取得してフォームのhidden fieldに設定
+        document.getElementById("latitudeInput").value = position.coords.latitude;
+        document.getElementById("longitudeInput").value = position.coords.longitude;
+      });
+    } else {
+      alert("現在地情報が利用できません。");
+    }
+  });
+</script>

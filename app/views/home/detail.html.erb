@@ -1,0 +1,32 @@
+<h1>ルート詳細</h1>
+
+<div id="map" style="height: 300px; width: 100%;"></div>
+
+<div class="route-info">
+  <div class="route-time">
+    <i class="icon-clock"></i>
+    <span>所要時間: <%= @estimated_time %> 分</span>
+  </div>
+  <div class="route-distance">
+    <i class="icon-map"></i>
+    <span>距離: <%= @route_distance %> km</span>
+  </div>
+</div>
+
+<h2>史跡</h2>
+<div class="sites-list">
+  <% @sites.each do |site| %>
+    <div class="site-card">
+      <div class="site-image">
+        <img src="<%= site[:image_url] %>" alt="<%= site[:name] %>">
+      </div>
+      <div class="site-info">
+        <h3><%= site[:name] %></h3>
+        <p>説明: <%= site[:description] %></p>
+        <div class="site-rating">
+          評価: <%= site[:rating] %> / 5
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
