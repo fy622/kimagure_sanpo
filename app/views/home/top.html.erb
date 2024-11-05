@@ -1,26 +1,18 @@
 <div class="container text-center mt-5 pt-5">
   <h1 class="display-5 fw-bold">歴史さんぽへようこそ！</h1>
   <p class="lead">歴史さんぽは、身近な史跡を巡るルートを提案する散歩ルート生成サービスです。</p>
-
   <h2 class="h4 my-4">さっそく使ってみる ↓</h2>
+  <%= form_with url: result_path, method: :post, local: true, id: "routeForm" do %>
+    <label>歩きたい距離 (km):</label>
+    <%= number_field_tag :distance, nil, placeholder: "例:3", id: "distanceInput" %>
+    <%= hidden_field_tag :latitude, nil, id: "latitudeInput" %>
+    <%= hidden_field_tag :longitude, nil, id: "longitudeInput" %>
 
-  <form>
-    <div class="mb-3">
-      <label for="distance" class="form-label">距離</label>
-      <input type="text" class="form-control" id="distance" placeholder="歩きたい距離を入力してください">
+    <div class="mt-3">
+      <%= submit_tag "ルートを生成する", class: "btn btn-dark btn-lg" %>
     </div>
-    <button type="submit" class="btn btn-dark btn-lg">ルートを生成する</button>
-  </form>
+  <% end %>
 </div>
-
-<h1>散歩ルート生成</h1>
-<%= form_with url: result_path, method: :post, local: true, id: "routeForm" do %>
-  <label>歩きたい距離 (km):</label>
-  <%= number_field_tag :distance, nil, placeholder: "例: 5", id: "distanceInput" %>
-  <%= hidden_field_tag :latitude, nil, id: "latitudeInput" %>
-  <%= hidden_field_tag :longitude, nil, id: "longitudeInput" %>
-  <%= submit_tag "ルート生成" %>
-<% end %>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
