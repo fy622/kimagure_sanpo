@@ -27,3 +27,13 @@
     }
   });
 </script>
+
+
+<!-- テスト -->
+<h1>ルート生成</h1>
+
+<%= form_with url: result_path, method: :post, local: true, id: "distanceForm" do |form| %>
+  <label for="distance">距離（km）:</label>
+  <%= form.number_field :distance, step: 0.1, required: true, id: "distance" %>
+  <%= form.submit "ルートを生成する" %>
+<% end %>
