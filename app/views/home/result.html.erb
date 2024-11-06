@@ -1,37 +1,35 @@
+<!-- app/views/home/result.html.erb -->
 <h1>ルート生成結果</h1>
+<div id="map"></div>
 
-<div id="map" style="height: 300px; width: 100%;"></div>
+<%= button_to "ルートを再生成する", result_path(distance: params[:distance]), method: :post %>
+<%= button_to "散歩する", detail_path(route: @route_data), method: :get %>
 
-<div class="route-info">
-  <div class="route-time">
-    <i class="icon-clock"></i>
-    <span>所要時間: <%= @estimated_time %> 分</span>
-  </div>
-  <div class="route-distance">
-    <i class="icon-map"></i>
-    <span>距離: <%= @route_distance %> km</span>
-  </div>
-</div>
+<script>
+function initMap() {
+    const routeData = JSON.parse('<%= @route_data %>');
 
-<h2>史跡</h2>
-<div class="sites-list">
-  <% @sites.each do |site| %>
-    <div class="site-card">
-      <div class="site-image">
-        <img src="<%= site[:image_url] %>" alt="<%= site[:name] %>">
-      </div>
-      <div class="site-info">
-        <h3><%= site[:name] %></h3>
-        <p>説明: <%= site[:description] %></p>
-        <div class="site-rating">
-          評価: <%= site[:rating] %> / 5
-        </div>
-      </div>
-    </div>
-  <% end %>
-</div>
+    var map = new google.maps.Map(document.getElementById("map"), {
+        center: routeData.origin,
+        zoom: 12
+    });
 
-<div class="route-buttons">
-  <%= button_to '再生成する', result_path, method: :post, class: "button-recreate" %>
-  <%= link_to '散歩する', detail_path(route_data: { latitude: @latitude, longitude: @longitude, distance: @distance }), class: "button-start" %>
-</div>
+    var directionsService = new google.maps.DirectionsService();
+    var directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+
+    directionsService.route({
+        origin: routeData.origin,
+        destination: routeData.destination,
+        waypoints: routeData.waypoints.map(site => ({ location: site, stopover: true })),
+        travelMode: google.maps.DirectionsTravelMode.WALKING,
+    }, function(response, status) {
+        if (status === google.maps.DirectionsStatus.OK) {
+            directionsRenderer.setDirections(response);
+        }
+    });
+}
+
+window.onload = initMap;
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAPS_API_KEY'] %>&callback=initMap&libraries=geometry,places" async defer></script>
