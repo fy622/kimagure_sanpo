@@ -14,26 +14,11 @@
   <% end %>
 </div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        // 現在地を取得してフォームのhidden fieldに設定
-        document.getElementById("latitudeInput").value = position.coords.latitude;
-        document.getElementById("longitudeInput").value = position.coords.longitude;
-      });
-    } else {
-      alert("現在地情報が利用できません。");
-    }
-  });
-</script>
-
 
 <!-- テスト -->
-<h1>ルート生成</h1>
-
-<%= form_with url: result_path, method: :post, local: true, id: "distanceForm" do |form| %>
+<form id="routeForm">
   <label for="distance">距離（km）:</label>
-  <%= form.number_field :distance, step: 0.1, required: true, id: "distance" %>
-  <%= form.submit "ルートを生成する" %>
-<% end %>
+  <input type="number" id="distance" step="0.1" min="0.1" required>
+  <button type="button" onclick="generateRoute()">ルートを生成する</button>
+</form>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAPS_API_KEY'] %>&callback=initMap"></script>
