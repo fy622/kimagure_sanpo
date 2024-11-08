@@ -1,24 +1,32 @@
 <div class="container text-center mt-5 pt-5">
   <h1 class="display-5 fw-bold">歴史さんぽへようこそ！</h1>
-  <p class="lead">歴史さんぽは、身近な史跡を巡るルートを提案する散歩ルート生成サービスです。</p>
-  <h2 class="h4 my-4">さっそく使ってみる ↓</h2>
-  <%= form_with url: result_path, method: :post, local: true, id: "routeForm" do %>
-    <label>歩きたい距離 (km):</label>
-    <%= number_field_tag :distance, nil, placeholder: "例:3", id: "distanceInput" %>
+  <p class="lead">身近な史跡を巡るルートを提案します。</p>
+  <h2 class="h5 my-4">さっそく使ってみよう！</h2>
+
+  <%= form_with url: routes_path, method: :post, local: true, id: "routeForm" do %>
+    <%= number_field_tag :distance, nil, placeholder: "例: 3 (km)", class: "form-control my-2", id: "distanceInput" %>
     <%= hidden_field_tag :latitude, nil, id: "latitudeInput" %>
     <%= hidden_field_tag :longitude, nil, id: "longitudeInput" %>
 
-    <div class="mt-3">
-      <%= submit_tag "ルートを生成する", class: "btn btn-dark btn-lg" %>
-    </div>
+    <%= submit_tag "ルートを生成する", class: "btn btn-dark btn-lg mt-3" %>
   <% end %>
 </div>
 
+<script>
+  // ユーザーの現在地を取得してフォームに設定
+  function setUserLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        document.getElementById("latitudeInput").value = position.coords.latitude;
+        document.getElementById("longitudeInput").value = position.coords.longitude;
+      }, (error) => {
+        alert("現在地を取得できませんでした。位置情報のアクセスを許可してください。");
+      });
+    } else {
+      alert("このブラウザでは位置情報がサポートされていません。");
+    }
+  }
 
-<!-- テスト -->
-<form id="routeForm">
-  <label for="distance">距離（km）:</label>
-  <input type="number" id="distance" step="0.1" min="0.1" required>
-  <button type="button" onclick="generateRoute()">ルートを生成する</button>
-</form>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAPS_API_KEY'] %>&callback=initMap"></script>
+  // ページ読み込み時に現在地を取得
+  document.addEventListener("DOMContentLoaded", setUserLocation);
+</script>
