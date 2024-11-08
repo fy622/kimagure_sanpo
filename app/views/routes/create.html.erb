@@ -1,0 +1,43 @@
+<div class="container mt-5">
+  <div class="text-center">
+    <h1 class="display-5 fw-bold mb-4">ルート生成結果</h1>
+    <div id="map" class="rounded shadow" style="height: 500px;"></div>
+
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <button onclick="regenerateRoute()" class="btn btn-dark btn-primary btn-lg">ルートを再生成する</button>
+      <button onclick="startWalk()" class="btn btn-dark btn-primary btn-lg">散歩する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ルートデータをJavaScriptに渡す
+  const routeData = <%= @route_data.to_json.html_safe %>;
+
+  function initMap() {
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 14,
+      center: { lat: routeData[0].latitude, lng: routeData[0].longitude }
+    });
+
+    const routeCoordinates = routeData.map(point => ({
+      lat: point.latitude,
+      lng: point.longitude
+    }));
+
+    const routePath = new google.maps.Polyline({
+      path: routeCoordinates,
+      geodesic: true,
+      strokeColor: "#FF0000",
+      strokeOpacity: 1.0,
+      strokeWeight: 2
+    });
+
+    routePath.setMap(map);
+  }
+
+  window.onload = initMap;
+</script>
+
+<!-- Google Maps APIの読み込み -->
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAPS_API_KEY'] %>&callback=initMap" async defer></script>
