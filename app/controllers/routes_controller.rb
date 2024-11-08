@@ -1,4 +1,6 @@
 class RoutesController < ApplicationController
+    protect_from_forgery with: :null_session
+
     def create
       distance = params[:distance].to_f
       latitude = params[:latitude].to_f
