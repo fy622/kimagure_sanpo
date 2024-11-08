@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("routeForm");
   
-    if (form) {
+    if (form) { // フォームが存在する場合にのみイベントを設定
       form.addEventListener("submit", function(event) {
         event.preventDefault();
   
