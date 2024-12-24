@@ -1,59 +1,68 @@
-require 'net/http'
-require 'json'
-
 class RoutesController < ApplicationController
   protect_from_forgery with: :null_session
 
+  require 'uri'
+  require 'net/http'
+  require 'json'
+
   def create
-    distance = params[:distance].to_f
-    latitude = params[:latitude].to_f
-    longitude = params[:longitude].to_f
+    # クライアントから送信されたデータを取得
+    data = JSON.parse(request.body.read)
+    latitude = data['latitude']
+    longitude = data['longitude']
+    distance = data['distance'].to_i * 1000 # kmをmに変換
 
-    # Directions APIでルートを生成
-    points = generate_route_with_directions_api(latitude, longitude, distance)
+    # Google Maps APIで史跡を検索
+    google_maps_url = URI("https://maps.googleapis.com/maps/api/place/textsearch/json")
+    google_maps_params = {
+      query: "史跡",
+      location: "#{latitude},#{longitude}",
+      radius: 5000,
+      key: ENV['GOOGLE_MAPS_API_KEY']
+    }
+    google_maps_url.query = URI.encode_www_form(google_maps_params)
 
-    @route_data = points
+    http = Net::HTTP.new(google_maps_url.host, google_maps_url.port)
+    http.use_ssl = true
+    request = Net::HTTP::Get.new(google_maps_url)
+    response = http.request(request)
 
-    respond_to do |format|
-      format.html
-      format.json { render json: { route: points } }
+    if response.code.to_i != 200
+      render json: { error: "Failed to fetch places from Google Maps API", details: response.body }, status: :bad_request
+      return
     end
-  end
 
-  private
-
-  def generate_route_with_directions_api(lat, lon, distance_km)
-    api_key = ENV['GOOGLE_MAPS_API_KEY'] # Fly.ioなどで設定した環境変数
-    origin = "#{lat},#{lon}"
-
-    # 仮の距離調整: 指定距離（km）に基づいて目標地点を計算
-    earth_radius = 6371.0 # 地球の半径 (km)
-    delta_lat = (distance_km / earth_radius) * (180 / Math::PI)
-    destination_lat = lat + delta_lat
-    destination_lon = lon # 経度は固定（改善の余地あり）
-
-    # URLエンコード
-    destination = "#{destination_lat},#{destination_lon}"
-    url = URI("https://maps.googleapis.com/maps/api/directions/json?" \
-              "origin=#{URI::DEFAULT_PARSER.escape(origin)}&destination=#{URI::DEFAULT_PARSER.escape(destination)}&mode=walking&key=#{api_key}")
-
-    # APIリクエストを送信
-    response = Net::HTTP.get(url)
-    data = JSON.parse(response)
-
-    # APIレスポンスからルート情報を抽出
-    if data['status'] == 'OK'
-      route = data['routes'].first['legs'].first['steps'].map do |step|
-        {
-          latitude: step['end_location']['lat'],
-          longitude: step['end_location']['lng']
-        }
-      end
-      return route
-    else
-      # デバッグ用エラーログ
-      Rails.logger.error "Google Maps API Error: #{data['status']}, #{data['error_message']}"
-      raise "Google Maps API Error: #{data['status']}"
+    places = JSON.parse(response.body)
+    waypoints = places["results"].map do |place|
+      "#{place['geometry']['location']['lat']},#{place['geometry']['location']['lng']}"
     end
+    selected_waypoints = waypoints.size > 3 ? waypoints.sample(3) : waypoints
+
+    # GraphHopper APIでルート生成
+    graphhopper_url = URI("https://graphhopper.com/api/1/route")
+    graphhopper_params = {
+      profile: 'foot',
+      key: ENV['GRAPHHOPPER_API_KEY'],
+      point: ["#{latitude},#{longitude}"] + selected_waypoints,
+      algorithm: 'round_trip',
+      'round_trip.distance': distance
+    }
+    graphhopper_url.query = URI.encode_www_form(graphhopper_params)
+
+    request = Net::HTTP::Get.new(graphhopper_url)
+    response = http.request(request)
+
+    if response.code.to_i != 200
+      render json: { error: "Failed to fetch route from GraphHopper API", details: response.body }, status: :bad_request
+      return
+    end
+
+    route = JSON.parse(response.body)
+
+    # 必要なデータのみを返す
+    render json: {
+      waypoints: selected_waypoints,
+      route: route['paths'].map { |path| { distance: path['distance'], time: path['time'], points: path['points'] } }
+    }
   end
 end
