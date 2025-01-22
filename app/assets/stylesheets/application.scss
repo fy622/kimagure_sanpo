@@ -1,0 +1,20 @@
+/* アイコンボタンのスタイル */
+.icon-btn {
+    background: none; /* 背景を削除 */
+    border: none; /* 枠線を削除 */
+    padding: 0; /* パディングを削除 */
+    display: inline-flex; /* インラインフレックスに変更 */
+    align-items: center; /* 垂直方向に中央揃え */
+    justify-content: center; /* 水平方向に中央揃え */
+    cursor: pointer; /* クリック可能なカーソルを表示 */
+    font-size: 1.5rem; /* アイコンのサイズ調整 */
+    color: #212529; /* アイコンの色（Bootstrap の primary カラー） */
+  }
+  
+  .icon-btn:hover {
+    color: #1a1e21; /* ホバー時の色変更 */
+  }
+  
+  .icon-btn:focus {
+    outline: none; /* フォーカス時の枠線を削除 */
+  }

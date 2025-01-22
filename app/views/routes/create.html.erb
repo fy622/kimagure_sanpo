@@ -9,32 +9,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  // ルートデータをJavaScriptに渡す
-  const routeData = <%= @route_data.to_json.html_safe %>;
-
-  function initMap() {
-    const map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 14,
-      center: { lat: routeData[0].latitude, lng: routeData[0].longitude }
-    });
-
-    const routeCoordinates = routeData.map(point => ({
-      lat: point.latitude,
-      lng: point.longitude
-    }));
-
-    const routePath = new google.maps.Polyline({
-      path: routeCoordinates,
-      geodesic: true,
-      strokeColor: "#FF0000",
-      strokeOpacity: 1.0,
-      strokeWeight: 2
-    });
-
-    routePath.setMap(map);
-  }
-
-  window.onload = initMap;
-</script>
