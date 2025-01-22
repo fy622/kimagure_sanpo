@@ -1,5 +1,9 @@
-// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
-import "./route_form";
-
-import Rails from "@rails/ujs";
+// Rails関連のライブラリをインポート
+import * as Rails from "@rails/ujs";
 Rails.start();
+
+// 必要なモジュールをインポート
+import "./modules/geolocation";
+import "./modules/google_maps";
+import "./modules/graphhopper";
+import "./main";

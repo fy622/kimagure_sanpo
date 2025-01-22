@@ -1,64 +1,27 @@
 <div class="container text-center mt-5 pt-5">
   <h1 class="display-5 fw-bold">歴史さんぽへようこそ！</h1>
-  <p class="lead">身近な史跡を巡るルートを提案します。</p>
+  <p class="text-muted">
+    現在地を使用して、史跡を経由するルートを提案します。<br>
+  </p>
   <h2 class="h5 my-4">さっそく使ってみよう！</h2>
 
+  <!-- フォーム -->
   <%= form_with url: routes_path, method: :post, local: true, id: "routeForm" do %>
-    <%= number_field_tag :distance, nil, placeholder: "例: 3 (km)", class: "form-control my-2", id: "distanceInput" %>
+    <div class="d-flex justify-content-center align-items-center mb-4">
+      <!-- 距離入力欄 -->
+      <%= number_field_tag :distance, nil, placeholder: "例: 3 (km)", class: "form-control me-3", id: "distanceInput", style: "width: 200px;" %>
+
+      <!-- 現在地取得ボタン -->
+      <button id="btn" class="icon-btn" type="button">
+        <i class="bi bi-geo-alt"></i>
+      </button>
+    </div>
+
+    <!-- 隠しフィールド -->
     <%= hidden_field_tag :latitude, nil, id: "latitudeInput" %>
     <%= hidden_field_tag :longitude, nil, id: "longitudeInput" %>
 
+    <!-- 送信ボタン -->
     <%= submit_tag "ルートを生成する", class: "btn btn-dark btn-lg mt-3" %>
   <% end %>
 </div>
-
-<script>
-  // ユーザーの現在地を取得してフォームに設定
-  function setUserLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        document.getElementById("latitudeInput").value = position.coords.latitude;
-        document.getElementById("longitudeInput").value = position.coords.longitude;
-      }, (error) => {
-        alert("現在地を取得できませんでした。位置情報のアクセスを許可してください。");
-      });
-    } else {
-      alert("このブラウザでは位置情報がサポートされていません。");
-    }
-  }
-
-  // ページ読み込み時に現在地を取得
-  document.addEventListener("DOMContentLoaded", setUserLocation);
-</script>
-
-<form id="routeForm">
-  <label for="distance">周回距離 (km):</label>
-  <input type="number" id="distance" name="distance" required>
-  <button type="submit">ルートを生成</button>
-</form>
-
-<script>
-document.getElementById('routeForm').addEventListener('submit', function(event) {
-  event.preventDefault();
-
-  // 現在地を取得
-  navigator.geolocation.getCurrentPosition(function(position) {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
-    const distance = document.getElementById('distance').value;
-
-    // サーバーに送信
-    fetch('/generate-route', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ latitude, longitude, distance })
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('生成されたルート:', data);
-      // ルートを表示するロジックを追加
-    })
-    .catch(error => console.error('エラー:', error));
-  });
-});
-</script>
