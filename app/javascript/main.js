@@ -1,37 +1,23 @@
 import { getCurrentLocation } from "./modules/geolocation";
+import { fetchNearbyHistoricalSites } from "./modules/google_maps";
+import { generateRoute } from "./modules/graphhopper";
+import { initMap, addMarkers, drawRoute } from "./modules/google_maps";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const latitudeInput = document.getElementById("latitudeInput");
-  const longitudeInput = document.getElementById("longitudeInput");
-  const btn = document.getElementById("btn");
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const { latitude, longitude } = await getCurrentLocation();
 
-  btn.addEventListener("click", () => {
-    getCurrentLocation(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        latitudeInput.value = latitude;
-        longitudeInput.value = longitude;
+    // Google Places APIで史跡を取得
+    const waypoints = await fetchNearbyHistoricalSites(latitude, longitude);
 
-        console.log("現在地を取得しました:", { latitude, longitude });
-      },
-      (error) => {
-        let message = "位置情報が取得できませんでした。";
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            message = "位置情報取得が拒否されました。ブラウザの設定を確認してください。";
-            break;
-          case error.POSITION_UNAVAILABLE:
-            message = "位置情報を取得できませんでした。デバイスの設定を確認してください。";
-            break;
-          case error.TIMEOUT:
-            message = "位置情報の取得がタイムアウトしました。";
-            break;
-          default:
-            message = "不明なエラーが発生しました。";
-        }
-        alert(message);
-        console.error("エラー詳細:", error);
-      }
-    );
-  });
+    // GraphHopper APIでルートを生成
+    const routePoints = await generateRoute({ latitude, longitude }, waypoints);
+
+    // Google Mapsで地図とルートを描画
+    const map = initMap(latitude, longitude);
+    addMarkers(map, { lat: latitude, lng: longitude }, waypoints);
+    drawRoute(map, routePoints);
+  } catch (error) {
+    console.error("エラーが発生しました:", error);
+  }
 });

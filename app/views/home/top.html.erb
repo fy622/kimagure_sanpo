@@ -1,27 +1,15 @@
-<div class="container text-center mt-5 pt-5">
-  <h1 class="display-5 fw-bold">歴史さんぽへようこそ！</h1>
-  <p class="text-muted">
-    現在地を使用して、史跡を経由するルートを提案します。<br>
-  </p>
-  <h2 class="h5 my-4">さっそく使ってみよう！</h2>
+<div class="container">
+  <h1>歴史さんぽ</h1>
+  <p>歩きたい距離を入力してください</p>
 
-  <!-- フォーム -->
   <%= form_with url: routes_path, method: :post, local: true, id: "routeForm" do %>
-    <div class="d-flex justify-content-center align-items-center mb-4">
-      <!-- 距離入力欄 -->
-      <%= number_field_tag :distance, nil, placeholder: "例: 3 (km)", class: "form-control me-3", id: "distanceInput", style: "width: 200px;" %>
-
-      <!-- 現在地取得ボタン -->
-      <button id="btn" class="icon-btn" type="button">
-        <i class="bi bi-geo-alt"></i>
-      </button>
+    <div>
+      <label for="distance">歩きたい距離 (km):</label>
+      <%= number_field_tag :distance, nil, step: 0.1, placeholder: "例: 3", required: true %>
     </div>
-
-    <!-- 隠しフィールド -->
-    <%= hidden_field_tag :latitude, nil, id: "latitudeInput" %>
-    <%= hidden_field_tag :longitude, nil, id: "longitudeInput" %>
-
-    <!-- 送信ボタン -->
-    <%= submit_tag "ルートを生成する", class: "btn btn-dark btn-lg mt-3" %>
+    <button type="button" id="getLocationBtn">現在地を取得</button>
+    <input type="hidden" id="latitudeInput" name="latitude">
+    <input type="hidden" id="longitudeInput" name="longitude">
+    <%= submit_tag "ルートを生成する" %>
   <% end %>
 </div>
