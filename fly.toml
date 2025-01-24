@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for rekishi-sanpo on 2024-10-31T11:05:24+09:00
+# fly.toml app configuration file generated for kimagure-sanpo on 2025-01-24T15:15:01+09:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'rekishi-sanpo'
+app = 'kimagure-sanpo'
 primary_region = 'nrt'
 console_command = '/rails/bin/rails console'
 
@@ -20,10 +20,20 @@ console_command = '/rails/bin/rails console'
   min_machines_running = 0
   processes = ['app']
 
+  [[http_service.checks]]
+    interval = '10s'
+    timeout = '2s'
+    grace_period = '5s'
+    method = 'GET'
+    path = '/up'
+    protocol = 'http'
+    tls_skip_verify = false
+
+    [http_service.checks.headers]
+      X-Forwarded-Proto = 'https'
+
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+  size = 'shared-cpu-1x'
 
 [[statics]]
   guest_path = '/app/public'

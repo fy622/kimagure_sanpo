@@ -17,6 +17,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+      RAILS_ENV: production
       TZ: 'Asia/Tokyo'
     ports:
       - "5432:5432"
