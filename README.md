@@ -1,7 +1,7 @@
-# [気まぐれさんぽ]
+# [きまぐれさんぽ]
 
 ## サービス概要
-「気まぐれさんぽ」は、入力した距離に基づいて散歩コースを生成するサービスです。散歩をより楽しいものにします。
+「きまぐれさんぽ」は、入力した距離に基づいて散歩コースを生成するサービスです。散歩をより楽しいものにします。
 
 ## 想定されるユーザー層
 * 年齢：40代以降が多いか
@@ -24,19 +24,19 @@
 * 会員登録
 * ログイン
 * 入力された距離に基づいたルート生成
-* ルート詳細
+* ルートお気に入り機能
+* ルートメモ機能
 * ルート生成履歴一覧
 
 ### その後の機能
-* ルート検索
-* ルートお気に入り機能
-* ルート編集機能
-* ルートメモ機能
+* ルート検索機能
 * 史跡経由機能
+* 史跡検索機能
+* 史跡レビュー機能
 
 
 ## 画面遷移図
-https://www.figma.com/design/e5HKXaWGZGxZDDmHti3Ddu/UI?node-id=0-1&t=KQfgGOsnPMbzx7Z9-1
+https://www.figma.com/design/xh9mVJn20hUf2IJHUCEh0H/UI-(kimagure_sanpo)?node-id=0-1&t=zvNLaWFccRVg9sSa-1
 
 ## ER図
 https://drive.google.com/file/d/1qaJ8DCzQlqyWeERhtEE-XJH45tR62YKZ/view?usp=sharing
