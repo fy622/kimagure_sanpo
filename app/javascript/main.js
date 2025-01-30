@@ -1,23 +1,36 @@
-import { getCurrentLocation } from "./modules/geolocation";
-import { fetchNearbyHistoricalSites } from "./modules/google_maps";
-import { generateRoute } from "./modules/graphhopper";
-import { initMap, addMarkers, drawRoute } from "./modules/google_maps";
+import { getCurrentLocation } from "./modules/geolocation.js";
+import { getRoute } from "./modules/graphhopper.js";
+import { initMap, drawRoute, clearRoute } from "./modules/google_maps.js";
+import { trackUserLocation } from "./modules/tracking.js";
 
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const { latitude, longitude } = await getCurrentLocation();
+document.addEventListener("DOMContentLoaded", () => {
+    const mapContainer = "map";
+    const distance = 5000;
 
-    // Google Places APIで史跡を取得
-    const waypoints = await fetchNearbyHistoricalSites(latitude, longitude);
+    const regenerateButton = document.getElementById("regenerate-route");
 
-    // GraphHopper APIでルートを生成
-    const routePoints = await generateRoute({ latitude, longitude }, waypoints);
+    if (!regenerateButton) {
+        console.warn("再生成ボタンが見つかりません。");
+        return;
+    }
 
-    // Google Mapsで地図とルートを描画
-    const map = initMap(latitude, longitude);
-    addMarkers(map, { lat: latitude, lng: longitude }, waypoints);
-    drawRoute(map, routePoints);
-  } catch (error) {
-    console.error("エラーが発生しました:", error);
-  }
+    getCurrentLocation((location) => {
+        if (!document.getElementById(mapContainer)) {
+            console.error(`エラー: ID '${mapContainer}' の要素が見つかりません。`);
+            return;
+        }
+
+        const mapInstance = initMap(mapContainer, location);
+
+        function generateNewRoute() {
+            clearRoute();
+            getRoute(location.lat, location.lng, distance).then((encodedPolyline) => {
+                if (encodedPolyline) drawRoute(encodedPolyline);
+            });
+        }
+
+        generateNewRoute();
+        regenerateButton.addEventListener("click", generateNewRoute);
+        trackUserLocation(mapInstance);
+    });
 });
