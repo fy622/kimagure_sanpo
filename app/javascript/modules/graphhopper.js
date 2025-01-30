@@ -1,26 +1,17 @@
-export async function generateRoute(start, waypoints, distance) {
-  const apiKey = ENV['GRAPHHOPPER_API_KEY'];
-  const endpoint = "https://graphhopper.com/api/1/route";
+export async function getRoute(lat, lng, baseDistance) {
+  const apiKey = process.env.GRAPHHOPPER_API_KEY;
+  const heading = Math.floor(Math.random() * 360);
+  const seed = Math.floor(Math.random() * 10000);
+  const adjustedDistance = Math.floor(baseDistance * (1 + (Math.random() * 0.2 - 0.1)));
 
-  const params = new URLSearchParams({
-    key: apiKey,
-    point: `${start.latitude},${start.longitude}`, // スタート地点
-    vehicle: "foot",
-    round_trip: true, // 周回ルートを指定
-  });
+  const url = `https://graphhopper.com/api/1/route?point=${lat},${lng}&type=json&vehicle=foot&locale=ja&round_trip.distance=${adjustedDistance}&round_trip.seed=${seed}&round_trip.heading=${heading}&key=${apiKey}`;
 
-  // 距離指定を修正
-  params.append("round_trip.distance", distance);
-
-  // 経由地を追加
-  waypoints.forEach((waypoint) => {
-    params.append("point", `${waypoint.latitude},${waypoint.longitude}`);
-  });
-
-  const response = await fetch(`${endpoint}?${params.toString()}`);
-  if (!response.ok) {
-    throw new Error("Failed to generate route.");
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data.paths[0].points;
+  } catch (error) {
+      console.error("GraphHopper API error:", error);
+      return null;
   }
-  const data = await response.json();
-  return data.paths[0].points; // ルートポイントを返す
 }
