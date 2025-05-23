@@ -2,40 +2,29 @@
   <h1>きまぐれさんぽ</h1>
   <p>歩きたい距離を入力してください</p>
 
-  <%= form_with url: routes_path, method: :post, local: true, id: "routeForm" do %>
-    <div>
-      <label for="distance">歩きたい距離 (km):</label>
-      <%= number_field_tag :distance, nil, step: 0.1, placeholder: "例: 3", required: true %>
-    </div>
-    <button type="button" id="getLocationBtn">現在地を取得</button>
-    <input type="hidden" id="latitudeInput" name="latitude">
-    <input type="hidden" id="longitudeInput" name="longitude">
-    <%= submit_tag "ルートを生成する" %>
-  <% end %>
+  <%= render "routes/form" %>
 </div>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const getLocationBtn = document.getElementById("getLocationBtn");
     const latitudeInput = document.getElementById("latitudeInput");
     const longitudeInput = document.getElementById("longitudeInput");
 
-    getLocationBtn.addEventListener("click", () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            latitudeInput.value = position.coords.latitude;
-            longitudeInput.value = position.coords.longitude;
-            alert("現在地を取得しました！");
-          },
-          (error) => {
-            console.error("現在地の取得に失敗:", error);
-            alert("現在地を取得できませんでした。位置情報の許可を確認してください。");
-          }
-        );
-      } else {
-        alert("このブラウザはGeolocation APIをサポートしていません。");
-      }
-    });
+    // ページ読み込み時に自動で現在地取得
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          latitudeInput.value = position.coords.latitude;
+          longitudeInput.value = position.coords.longitude;
+          console.log("現在地を取得しました");
+        },
+        (error) => {
+          console.error("現在地の取得に失敗:", error);
+          alert("現在地を取得できませんでした。位置情報の許可を確認してください。");
+        }
+      );
+    } else {
+      alert("このブラウザはGeolocation APIをサポートしていません。");
+    }
   });
 </script>

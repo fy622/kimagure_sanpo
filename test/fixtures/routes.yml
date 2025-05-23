@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  distance: 1.5
+  time: 1.5
+  latitude: 1.5
+  longitude: 1.5
+  encoded_polyline: MyText
+
+two:
+  name: MyString
+  distance: 1.5
+  time: 1.5
+  latitude: 1.5
+  longitude: 1.5
+  encoded_polyline: MyText
