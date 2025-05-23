@@ -1,14 +1,13 @@
 let map;
 let routePolyline;
 
-export function initMap(containerId, center) {
+function initMap(containerId, center) {
     const mapElement = document.getElementById(containerId);
     if (!mapElement) return console.error(`エラー: ID '${containerId}' の要素が見つかりません。`);
-
     map = new google.maps.Map(mapElement, { center, zoom: 14 });
 }
 
-export function drawRoute(encodedPolyline) {
+function drawRoute(encodedPolyline) {
     if (!map) return console.error("エラー: `initMap()` が実行されていません。");
 
     const decodedPath = google.maps.geometry.encoding.decodePath(encodedPolyline);
@@ -25,6 +24,13 @@ export function drawRoute(encodedPolyline) {
     routePolyline.setMap(map);
 }
 
-export function clearRoute() {
+function clearRoute() {
     if (routePolyline) routePolyline.setMap(null);
 }
+
+// ここがポイント！！
+window.KimagureMap = {
+    initMap,
+    drawRoute,
+    clearRoute
+};

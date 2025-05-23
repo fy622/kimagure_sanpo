@@ -1,0 +1,54 @@
+<div class="container mt-5">
+  <div class="text-center">
+    <h1 class="display-5 fw-bold mb-4">ルート生成結果</h1>
+    <div id="map" style="height: 500px; width: 100%;"></div>
+
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <button id="regenerate-route" class="btn btn-primary btn-lg">ルートを再生成</button>
+      <button id="start-walk" class="btn btn-secondary btn-lg">散歩を開始する</button>
+    </div>
+  </div>
+</div>
+
+<!-- Google Maps API（callback登録付き） -->
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAPS_API_KEY'] %>&libraries=geometry&callback=initKimagureMap">
+</script>
+
+<!-- データ埋め込み -->
+<script>
+  window.__KIMAGURE_DATA__ = {
+    center: <%= @center.to_json.html_safe %>,
+    encodedPolyline: <%= @route_points.to_json.html_safe %>,
+    distance: <%= @distance.to_json.html_safe rescue nil %>
+  };
+  window.initKimagureMap = function () {
+    const { center, encodedPolyline } = window.__KIMAGURE_DATA__;
+    window.KimagureMap.initMap("map", center);
+    window.KimagureMap.drawRoute(encodedPolyline);
+  };
+</script>
+
+<!-- メイン処理（モジュール読み込み） -->
+<script type="module">
+  import { clearRoute } from "modules/google_maps";
+  import { trackUserLocation } from "modules/tracking";
+
+  document.getElementById("regenerate-route")?.addEventListener("click", async () => {
+    const { center, distance } = window.__KIMAGURE_DATA__;
+    clearRoute();
+
+    const response = await fetch(`/routes/new_route?lat=${center.lat}&lng=${center.lng}&distance=${distance}`);
+    const data = await response.json();
+
+    if (data.encodedPolyline) {
+      window.KimagureMap.drawRoute(data.encodedPolyline);
+    }
+  });
+
+  document.getElementById("start-walk")?.addEventListener("click", () => {
+    alert("散歩を開始しました！");
+  });
+
+  trackUserLocation();
+</script>

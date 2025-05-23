@@ -1,0 +1,9 @@
+<%= form_with url: routes_path, method: :post, local: true, id: "routeForm" do %>
+  <div>
+    <label for="distance">歩きたい距離 (km):</label>
+    <%= number_field_tag :distance, nil, step: 0.1, placeholder: "例: 3", required: true %>
+  </div>
+  <input type="hidden" id="latitudeInput" name="latitude">
+  <input type="hidden" id="longitudeInput" name="longitude">
+  <%= submit_tag "ルートを生成する" %>
+<% end %>
