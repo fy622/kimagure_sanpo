@@ -5,4 +5,6 @@ Rails.application.routes.draw do
   root "home#top"
   
   resources :routes
+
+  get "mypage", to: "users#mypage", as: :mypage
 end
