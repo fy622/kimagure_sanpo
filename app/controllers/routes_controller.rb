@@ -3,6 +3,7 @@ require 'uri'
 require 'json'
 
 class RoutesController < ApplicationController
+  before_action :authenticate_user!, only: [:index]
   def create
     latitude = params[:latitude].to_f
     longitude = params[:longitude].to_f
@@ -59,5 +60,9 @@ class RoutesController < ApplicationController
     @center = { lat: @route.latitude, lng: @route.longitude }
     @route_points = @route.encoded_polyline
     @distance = @route.distance
+  end
+
+  def index
+    @routes = Route.where(user_id: current_user.id).order(created_at: :desc)
   end
 end

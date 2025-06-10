@@ -15,6 +15,14 @@
   <div class="d-flex flex-column min-vh-100">
     <%= render 'shared/header' %>
 
+    <% if notice %>
+    <p class="notice"><%= notice %></p>
+    <% end %>
+
+    <% if alert %>
+    <p class="alert"><%= alert %></p>
+    <% end %>
+    
     <main class="flex-fill py-5">
       <%= yield %>
     </main>
