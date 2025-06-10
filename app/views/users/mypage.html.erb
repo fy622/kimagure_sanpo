@@ -1,0 +1,34 @@
+<h2>マイページ</h2>
+
+<section>
+  <h3>ユーザー情報</h3>
+  <p><strong>ユーザー名：</strong> <%= current_user.name %></p>
+  <p><strong>メールアドレス：</strong> <%= current_user.email %></p>
+
+  <%= link_to "プロフィールを編集する", edit_user_registration_path, class: "btn btn-secondary" %>
+</section>
+
+<hr>
+
+<section>
+  <h3>ルート生成履歴</h3>
+  <% if @routes.present? %>
+    <ul>
+      <% @routes.each do |route| %>
+        <li>
+          <strong><%= l(route.created_at, format: :short) %></strong><br>
+          所要時間：<%= route.time %>分 / 距離：<%= route.distance %>km
+          <%= link_to "詳細", route_path(route), class: "btn btn-sm" %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>まだルートがありません。</p>
+  <% end %>
+</section>
+
+<hr>
+
+<section>
+  <%= link_to "ログアウト", destroy_user_session_path, method: :delete, class: "btn btn-danger", data: { confirm: "ログアウトしますか？" } %>
+</section>
