@@ -1,6 +1,11 @@
 <div class="container">
   <h1>きまぐれさんぽ</h1>
-  <p>歩きたい距離を入力してください</p>
+
+  <% if user_signed_in? %>
+    <p><%= current_user.name %>さん、ようこそ！<br>歩きたい距離を入力してルートを作成しましょう。</p>
+  <% else %>
+    <p>歩きたい距離を入力してください（履歴を残すにはログインが必要です）</p>
+  <% end %>
 
   <%= render "routes/form" %>
 </div>

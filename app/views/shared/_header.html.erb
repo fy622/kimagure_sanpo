@@ -3,9 +3,15 @@
     <%= link_to root_path, class: 'navbar-brand text-white' do %>
       きまぐれさんぽ
     <% end %>
-    <div class="ml-auto">
-      <%= link_to "#", class: 'nav-link' do %>
-        <i class="bi bi-box-arrow-in-right text-white" style="font-size: 2rem;"></i>
+    <div class="ms-auto">
+      <% if user_signed_in? %>
+        <%= link_to mypage_path, class: 'nav-link' do %>
+          <i class="bi bi-person-circle text-white" style="font-size: 2rem;"></i>
+        <% end %>
+      <% else %>
+        <%= link_to new_user_session_path, class: 'nav-link' do %>
+          <i class="bi bi-box-arrow-in-right text-white" style="font-size: 2rem;"></i>
+        <% end %>
       <% end %>
     </div>
   </div>
