@@ -3,8 +3,6 @@ require 'uri'
 require 'json'
 
 class RoutesController < ApplicationController
-  before_action :authenticate_user!, only: [:index]
-
   def create
     latitude = params[:latitude].to_f
     longitude = params[:longitude].to_f
