@@ -8,7 +8,7 @@ function initMap(containerId, center) {
 }
 
 function drawRoute(encodedPolyline) {
-    if (!map) return console.error("エラー: `initMap()` が実行されていません。");
+    if (!map) return console.error("エラー: initMap() が実行されていません。");
 
     const decodedPath = google.maps.geometry.encoding.decodePath(encodedPolyline);
     if (routePolyline) routePolyline.setMap(null);
@@ -28,7 +28,6 @@ function clearRoute() {
     if (routePolyline) routePolyline.setMap(null);
 }
 
-// ここがポイント！！
 window.KimagureMap = {
     initMap,
     drawRoute,
